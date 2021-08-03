@@ -1,7 +1,9 @@
 import React, {useState} from 'react';
 import {makeStyles} from "@material-ui/core";
+
 export default function useForm(initialValues) {
-const [values, setValues] = useState(initialValues)
+  const [values, setValues] = useState(initialValues)
+  const [error, setError] = useState({})
   
   function handleInputChange(e) {
     const {name, value} = e.target
@@ -11,7 +13,9 @@ const [values, setValues] = useState(initialValues)
   return {
     values,
     setValues,
-    handleInputChange
+    handleInputChange,
+    error,
+    setError
   };
 }
 const useStyle = makeStyles(theme => (
@@ -25,11 +29,11 @@ const useStyle = makeStyles(theme => (
   }
 ))
 
-export function Form(props) {
+export function Form({children, ...others}) {
   const classes = useStyle()
   return (
-    <form className={classes.root} autoComplete={'off'}>
-      {props.children}
+    <form className={classes.root} {...others} autoComplete={'off'}>
+      {children}
     </form>
   )
 }

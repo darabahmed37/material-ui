@@ -1,5 +1,5 @@
 import React from 'react';
-import {Grid, makeStyles,} from "@material-ui/core";
+import {Grid,} from "@material-ui/core";
 import useForm, {Form} from '../../Components/useForm'
 import {Controls} from '../../Components/controls/controls'
 import {getDepartmentCollection} from "../../services/EmployeeServices";
@@ -27,25 +27,43 @@ const initialValues = {
 }
 
 const EmployeeForm = () => {
-  const {values, setValues, handleInputChange} = useForm(initialValues)
-
+  const {values, setValues, handleInputChange, error, setError} = useForm(initialValues)
+  
+  const validate = () => {
+    let temp = {}
+    temp.name = values.name ? "" : "This Field is Required"
+    temp.email = (/$|.+@.+..+/).test(values.email) ? "" : "Email is not valid"
+    temp.mobile = values.mobile.length > 10 ? "" : "Minimum 11 numbers required"
+    temp.department = values.department.length != 0 ? "" : "This Field is Required"
+    setError({...temp})
+    return Object.values(temp).every(x => x == "")
+  }
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    if (validate()) {
+      window.alert('testing')
+    }
+  }
   return (
-    <Form>
+    <Form onSubmit={handleSubmit}>
       <Grid container>
         <Grid item xs={12} md={6}>
           <Controls.Input name={'name'}
                           label={'Full Name'}
                           value={values.name}
                           onChange={handleInputChange}
+                          error={error.name}
           />
           <Controls.Input
             label={"Email"}
             name={'email'}
             value={values.email}
+            error={error.email}
             onChange={handleInputChange}
           /> <Controls.Input
           label={"Mobile"}
           name={'mobile'}
+          error={error.mobile}
           value={values.mobile}
           onChange={handleInputChange}
         /> <Controls.Input
